@@ -17,13 +17,10 @@ enum DifferentPage: Identifiable {
 
 struct ContentView: View {
     
-    @State private var world: Bool = false
-    @State private var toLog: Bool = false
-    
     @State private var connect: DifferentPage?
     
     var body: some View {
-        VStack {
+        ZStack {
             Button {
                 self.connect = .modal
             } label: {
@@ -36,7 +33,6 @@ struct ContentView: View {
             }
             .buttonStyle(.plain)
         }
-        .padding()
         .sheet(item: $connect) { item in
             switch item {
                 case .modal:
@@ -47,11 +43,57 @@ struct ContentView: View {
                         .presentationDetents([.large])
             }
         }
+        .safeAreaInset(edge: .bottom) {
+            TabView {
+                HomeView()
+                    .tabItem {
+                        Label("Home", systemImage: "1.square")
+                    }
+                AnotherView()
+                    .tabItem {
+                        Label("Another", systemImage: "2.square")
+                    }
+                SquareGameView()
+                    .tabItem {
+                        Label("Square", systemImage: "3.square")
+                    }
+                ProfileView()
+                    .tabItem {
+                        Label("Profile", systemImage: "4.square")
+                    }
+            }
+        }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
+        //AnotherView()
         ContentView()
+    }
+}
+
+// MARK: - AnotherView
+
+struct AnotherView: View {
+    
+    var platform = ["SteamColor", "XboxColor", "PlayStationColor", "NintendoColor"]
+    
+    @State private var choice: String = "SteamColor"
+    
+    var body: some View {
+        GeometryReader { geo in
+            VStack(alignment: .center) {
+                Picker("", selection: $choice) {
+                    ForEach(platform, id: \.self) { item in
+                        Image(item)
+                            .resizable()
+                            .scaledToFit()
+                    }
+                    .padding(.all, 5)
+                }
+                .pickerStyle(.inline)
+            }
+        }
     }
 }
